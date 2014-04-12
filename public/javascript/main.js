@@ -13,7 +13,7 @@
 
   function connect_to_chat_firebase(){
     /* Include your Firebase link here!*/
-    fb_instance = new Firebase("https://gsroth-p3-v1.firebaseio.com");
+    fb_instance = new Firebase("https://natasha-preston-1.firebaseio.com/");
 
     // generate new chatroom id or use existing id
     var url_segments = document.location.href.split("/#");
@@ -68,23 +68,29 @@
     $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
     if(data.v){
       // for video element
-      var video = document.createElement("video");
-      video.autoplay = true;
-      video.controls = false; // optional
-      video.loop = true;
-      video.width = 120;
+      var video1 = document.createElement("video");
+      
+      video1.autoplay = true;
+      video1.controls = false; // optional
+      video1.loop = true;
+      //video1.min-width = 100%;
+      //video1.min-height = 100%;
+      video1.width = 900;
+      //video1.height = 100%;
+      //video.z-index = -100;
+      //video.border = red;
 
       var source = document.createElement("source");
       source.src =  URL.createObjectURL(base64_to_blob(data.v));
       source.type =  "video/webm";
 
-      video.appendChild(source);
-
+      video1.appendChild(source);
+      //$("#"+video1).addClass("emotion");
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
-
-      document.getElementById("conversation").appendChild(video);
+      //video1.addClass("emotion");
+      document.getElementById("conversation").appendChild(video1);
     }
   }
 

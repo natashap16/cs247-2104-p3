@@ -53,3 +53,13 @@ a {
   text-align: center;
   padding: 50px 0;
 }
+video {
+  border:20px solid red;
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  transition:opacity 2s ease-in-out;
+}
+video:hover {
+  opacity:0;
+}

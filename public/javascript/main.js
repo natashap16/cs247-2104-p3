@@ -9,7 +9,14 @@
   $(document).ready(function(){
     connect_to_chat_firebase();
     connect_webcam();
+    $("#recorded_video").hover(clear_video);
   });
+
+  function clear_video() {
+    setTimeout(function() {
+       $("#recorded_video").empty();
+    }, 2000);
+  }
 
   function connect_to_chat_firebase(){
     /* Include your Firebase link here!*/
@@ -85,12 +92,15 @@
       source.type =  "video/webm";
 
       video1.appendChild(source);
-      //$("#"+video1).addClass("emotion");
+      document.getElementById("recorded_video").appendChild(video1);
+      //$("#recorded_video").append("<div class='video_player'>")
+      //$("#"+video1).addClass("recorded_video");
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
       //video1.addClass("emotion");
-      document.getElementById("conversation").appendChild(video1);
+      
+      //document.getElementById("conversation").appendChild(video1);
     }
   }
 

@@ -9,15 +9,15 @@
   $(document).ready(function(){
     connect_to_chat_firebase();
     connect_webcam();
-    $("#recorded_video").hover(clear_video);
+    //$("#recorded_video").hover(clear_video);
   });
-
+/*
   function clear_video() {
     setTimeout(function() {
        $("#recorded_video").empty();
     }, 2000);
   }
-
+*/
   function connect_to_chat_firebase(){
     /* Include your Firebase link here!*/
     fb_instance = new Firebase("https://natasha-preston-1.firebaseio.com/");
@@ -82,7 +82,7 @@
       video1.loop = true;
       //video1.min-width = 100%;
       //video1.min-height = 100%;
-      video1.width = 900;
+      video1.width = 1000;
       //video1.height = 100%;
       //video.z-index = -100;
       //video.border = red;
@@ -93,6 +93,17 @@
 
       video1.appendChild(source);
       document.getElementById("recorded_video").appendChild(video1);
+      //$("#recorded_video").animate({opacity, 'hide'}, 2000);
+      /*
+      setTimeout(function() {
+        $("#recorded_video").fadeOut();
+      }, 2000);
+*/
+      //video1.addClass("fade");
+      //$("#box").delay(100).();
+      setTimeout(function() {
+        $("#recorded_video").empty();
+      }, 3000);
       //$("#recorded_video").append("<div class='video_player'>")
       //$("#"+video1).addClass("recorded_video");
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below

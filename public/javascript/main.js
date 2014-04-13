@@ -79,13 +79,21 @@
       $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who+"</span>");
       var message = data.m;
       var messageArray = message.split(" ");
-      var delayPerWord = 300;
-      var delayForNewLine = (messageArray.length+1) * delayPerWord;
+      var delayPerWord = 0;
+      var delayForNewLine = messageArray.length * 25;
 
+      //to get color of emotion
+      var color = data.emotion;
+      $("#topBox").css("background-color", color);
+      $("#bottomBox").css("background-color", color);
+      //var color = "#FFFFFF";
+
+      // to get text to appear word by word, foreshadowing video
       var whereToAppend = $("#conversation");
+      var wordColor = data.c;
       var addTextByDelay = function(messageArray, whereToAppend, delay) {
         if(messageArray.length > 0) {
-          whereToAppend.append(messageArray[0] + " ");
+          whereToAppend.append("<span style='color:"+wordColor+"'>"+messageArray[0] + " </span>");
           setTimeout(function() {
             addTextByDelay(messageArray.slice(1), whereToAppend, delay);
           }, delay);
@@ -96,27 +104,17 @@
         $("#conversation").append("<br/>");
       }, delayForNewLine);
 
+      setTimeout(function() {
+        $("#bottomBox").fadeIn(delayForNewLine*3);
+      }, 100);
+
       // for video element
-      var emotion = data.emotion;
-      var color = "#FFFFFF";
-      if(emotion == ":)") {
-        color = "#FFFD91";
-      } else if(emotion ==":(") {
-        color = "#2B619E";
-      } else if(emotion == "lol") {
-        color = "#FA9D07";
-      }
       var video1 = document.createElement("video");
       
       video1.autoplay = true;
       video1.controls = false; // optional
       video1.loop = true;
-      //video1.min-width = 100%;
-      //video1.min-height = 100%;
       video1.width = 1000;
-      //video1.height = 100%;
-      //video.z-index = -100;
-      //video.border = red;
 
       var source = document.createElement("source");
       source.src =  URL.createObjectURL(base64_to_blob(data.v));
@@ -125,30 +123,28 @@
       video1.appendChild(source);
       setTimeout(function() {
         document.getElementById("recorded_video").appendChild(video1);
+        $("#bottomBox").show();
+        $("#topBox").show();
+
         //$("#recorded_video").animate({opacity, 'hide'}, 2000);
         /*
         setTimeout(function() {
           $("#recorded_video").fadeOut();
         }, 2000);
   */
-        //video1.addClass("fade");
-        $("#topBox").css("background-color", color);
-        $("#bottomBox").css("background-color", color);
-        $("#topBox").show();
-        $("#bottomBox").show();
+        //to make the video disappear
         setTimeout(function() {
           $("#recorded_video").empty();
           $("#bottomBox").fadeOut('slow');
           $("#topBox").hide();
-        }, 3000);
-      }, delayForNewLine+500);
-      //$("#recorded_video").append("<div class='video_player'>")
-      //$("#"+video1).addClass("recorded_video");
+        }, 2000);
+      }, delayForNewLine+200);
+
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
-      //video1.addClass("emotion");
       
+      //this line was from starter code to add video into conversation
       //document.getElementById("conversation").appendChild(video1);
     }
   }
@@ -214,8 +210,8 @@
       };
       setInterval( function() {
         mediaRecorder.stop();
-        mediaRecorder.start(3000);
-      }, 3000 );
+        mediaRecorder.start(1700);
+      }, 1700 );
       console.log("connect to media stream!");
     }
 
@@ -230,10 +226,25 @@
 
   // check to see if a message qualifies to be replaced with video.
   var has_emotions = function(msg){
-    var options = ["lol",":)",":("];
+    var options = [":-)",":)",":D",":-D","lol",":(",":'(",":'-(",":o",":-o","o_o",";)",";-)", "<3",":/",":-/","=/"];
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
-        return options[i];
+        if(i <= 1) {
+          return "#FFFD91"; //happy color
+        } else if(i >=2 && i <= 4) {
+          return "#FA9D07"; //laughter color
+        } else if(i>=5 && i <=7) {
+          return "#2B619E"; //sad color
+        } else if(i>=8 && i <= 10) {
+          return "#F06237"; //surprise color
+        } else if(i>=11 && i <= 12) {
+          return "#ADEB42"; //wink color
+        } else if(i==13) {
+          return "#F748AB"; //love color
+        } else if(i>=14 && i<= 16) {
+          return "#917E43"; //skeptical color
+        }
+        //return options[i];
         //console.log("return: " + options[i]);
       }
     }

@@ -29,7 +29,7 @@
     }else{
       fb_chat_room_id = Math.random().toString(36).substring(7);
     }
-    display_msg({m:"Share this url with your friend to join this chat: "+ document.location.origin+"/#"+fb_chat_room_id,c:"red"})
+    display_msg({who:"",m:"Share this url with your friend to join this chat: "+ document.location.origin+"/#"+fb_chat_room_id,c:"red"})
 
     // set up variables to access firebase data structure
     var fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
@@ -39,7 +39,7 @@
 
     // listen to events
     fb_instance_users.on("child_added",function(snapshot){
-      display_msg({m:snapshot.val().name+" joined the room",c: snapshot.val().c});
+      display_msg({who:"",m:snapshot.val().name+" joined the room",c: snapshot.val().c});
     });
     fb_instance_stream.on("child_added",function(snapshot){
       display_msg(snapshot.val());
@@ -58,9 +58,9 @@
       if (event.which == 13) {
         var curr_emotion = has_emotions($(this).val());
         if(curr_emotion){
-          fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color, emotion:curr_emotion});
+          fb_instance_stream.push({who:username+": ", m:$(this).val(), v:cur_video_blob, c: my_color, emotion:curr_emotion});
         }else{
-          fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
+          fb_instance_stream.push({who:username+": ", m:$(this).val(), c: my_color});
         }
         $(this).val("");
         scroll_to_bottom(0);
@@ -73,8 +73,29 @@
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
-    $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
-    if(data.v){
+    if(!data.v) {
+      $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.who + data.m+"</div>");
+    } else if(data.v) {
+      $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who+"</span>");
+      var message = data.m;
+      var messageArray = message.split(" ");
+      var delayPerWord = 300;
+      var delayForNewLine = (messageArray.length+1) * delayPerWord;
+
+      var whereToAppend = $("#conversation");
+      var addTextByDelay = function(messageArray, whereToAppend, delay) {
+        if(messageArray.length > 0) {
+          whereToAppend.append(messageArray[0] + " ");
+          setTimeout(function() {
+            addTextByDelay(messageArray.slice(1), whereToAppend, delay);
+          }, delay);
+        }
+      }
+      addTextByDelay(messageArray, whereToAppend, delayPerWord);
+      setTimeout(function() {
+        $("#conversation").append("<br/>");
+      }, delayForNewLine);
+
       // for video element
       var emotion = data.emotion;
       var color = "#FFFFFF";
@@ -102,23 +123,25 @@
       source.type =  "video/webm";
 
       video1.appendChild(source);
-      document.getElementById("recorded_video").appendChild(video1);
-      //$("#recorded_video").animate({opacity, 'hide'}, 2000);
-      /*
       setTimeout(function() {
-        $("#recorded_video").fadeOut();
-      }, 2000);
-*/
-      //video1.addClass("fade");
-      $("#topBox").css("background-color", color);
-      $("#bottomBox").css("background-color", color);
-      $("#topBox").show();
-      $("#bottomBox").show();
-      setTimeout(function() {
-        $("#recorded_video").empty();
-        $("#bottomBox").fadeOut('slow');
-        $("#topBox").hide();
-      }, 3000);
+        document.getElementById("recorded_video").appendChild(video1);
+        //$("#recorded_video").animate({opacity, 'hide'}, 2000);
+        /*
+        setTimeout(function() {
+          $("#recorded_video").fadeOut();
+        }, 2000);
+  */
+        //video1.addClass("fade");
+        $("#topBox").css("background-color", color);
+        $("#bottomBox").css("background-color", color);
+        $("#topBox").show();
+        $("#bottomBox").show();
+        setTimeout(function() {
+          $("#recorded_video").empty();
+          $("#bottomBox").fadeOut('slow');
+          $("#topBox").hide();
+        }, 3000);
+      }, delayForNewLine+500);
       //$("#recorded_video").append("<div class='video_player'>")
       //$("#"+video1).addClass("recorded_video");
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
@@ -211,7 +234,7 @@
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
         return options[i];
-        console.log("return: " + options[i]);
+        //console.log("return: " + options[i]);
       }
     }
     return undefined;

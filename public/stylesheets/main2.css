@@ -85,7 +85,7 @@ video:hover {
 }
 */
 #topBox {
-  background-color:red;
+  background-color:#52DF9D;
   top:0;
   right:0;
   width:100%;
@@ -96,7 +96,7 @@ video:hover {
   z-index:250;
 }
 #bottomBox {
-  background-color:red;
+  background-color:#52DF9D;
   top:0;
   right:0;
   width:100%;

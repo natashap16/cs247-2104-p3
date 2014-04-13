@@ -56,8 +56,9 @@
     // bind submission box
     $("#submission input").keydown(function( event ) {
       if (event.which == 13) {
-        if(has_emotions($(this).val())){
-          fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color});
+        var curr_emotion = has_emotions($(this).val());
+        if(curr_emotion){
+          fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color, emotion:curr_emotion});
         }else{
           fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
         }
@@ -75,6 +76,15 @@
     $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
     if(data.v){
       // for video element
+      var emotion = data.emotion;
+      var color = "#FFFFFF";
+      if(emotion == ":)") {
+        color = "#FFFD91";
+      } else if(emotion ==":(") {
+        color = "#2B619E";
+      } else if(emotion == "lol") {
+        color = "#FA9D07";
+      }
       var video1 = document.createElement("video");
       
       video1.autoplay = true;
@@ -100,6 +110,8 @@
       }, 2000);
 */
       //video1.addClass("fade");
+      $("#topBox").css("background-color", color);
+      $("#bottomBox").css("background-color", color);
       $("#topBox").show();
       $("#bottomBox").show();
       setTimeout(function() {
@@ -198,10 +210,11 @@
     var options = ["lol",":)",":("];
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
-        return true;
+        return options[i];
+        console.log("return: " + options[i]);
       }
     }
-    return false;
+    return undefined;
   }
 
 

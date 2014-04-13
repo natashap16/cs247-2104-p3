@@ -100,9 +100,12 @@
       }, 2000);
 */
       //video1.addClass("fade");
-      //$("#box").delay(100).();
+      $("#topBox").show();
+      $("#bottomBox").show();
       setTimeout(function() {
         $("#recorded_video").empty();
+        $("#bottomBox").fadeOut('slow');
+        $("#topBox").hide();
       }, 3000);
       //$("#recorded_video").append("<div class='video_player'>")
       //$("#"+video1).addClass("recorded_video");

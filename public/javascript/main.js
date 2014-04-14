@@ -47,7 +47,6 @@
 
     // block until username is answered
     username = window.prompt("Welcome, warrior! please declare your name?");
-    console.log("username: " + username);
     if(!username){
       username = "anonymous"+Math.floor(Math.random()*1111);
     }
@@ -56,7 +55,6 @@
 
     // bind submission box
     $("#submission input").keydown(function( event ) {
-          console.log("username: " + username);
       if (event.which == 13) {
         var curr_emotion = has_emotions($(this).val());
         if(curr_emotion){
@@ -85,7 +83,23 @@
       var delayForNewLine = messageArray.length * 25;
 
       //to get color of emotion
-      var color = data.emotion;
+      var emotion = data.emotion;
+      var color = "#FFFFFF";
+      if(emotion == ":)" || emotion == ":-)") {
+          color = "#FFFD91"; //happy color
+      } else if(emotion == "lol" || emotion == ":D" || emotion == ":-D") {
+          color = "#FA9D07"; //laughter color
+      } else if(emotion == ":(" || emotion == ":-(" || emotion == ":'-(") {
+          color = "#2B619E"; //sad color
+      } else if(emotion == ":o" || emotion == "o_o" || emotion == ":-o") {
+          color = "#F06237"; //surprise color
+      } else if(emotion == ";)" || emotion == ";-)") {
+          color = "#ADEB42"; //wink color
+      } else if(emotion == "<3") {
+          color = "#F748AB"; //love color
+      } else if(emotion == ":/" || emotion == ":-/" || emotion == "=/") {
+          color = "#917E43"; //skeptical color
+      }
       $("#topBox").css("background-color", color);
       $("#bottomBox").css("background-color", color);
       //var color = "#FFFFFF";
@@ -127,7 +141,15 @@
           document.getElementById("recorded_video").appendChild(video1);
           $("#bottomBox").show();
           $("#topBox").show();
-
+          $("#word").show();
+          $("#word").text(emotion);
+          /*
+          emotionText = document.createTextNode(emotion);
+          console.log("emoticon: " + emotionText);
+          var emotionPar = document.createElement('p');
+          emotionPar.appendChild(emotionText);
+          document.getElementById("word").appendChild(emotionPar);
+          */
           //$("#recorded_video").animate({opacity, 'hide'}, 2000);
           /*
           setTimeout(function() {
@@ -137,6 +159,7 @@
           //to make the video disappear
           setTimeout(function() {
             $("#recorded_video").empty();
+            $("#word").hide();
             $("#bottomBox").fadeOut('slow');
             $("#topBox").hide();
           }, 2000);
@@ -232,6 +255,7 @@
     var options = [":-)",":)",":D",":-D","lol",":(",":'(",":'-(",":o",":-o","o_o",";)",";-)", "<3",":/",":-/","=/"];
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
+        /*
         if(i <= 1) {
           return "#FFFD91"; //happy color
         } else if(i >=2 && i <= 4) {
@@ -247,7 +271,8 @@
         } else if(i>=14 && i<= 16) {
           return "#917E43"; //skeptical color
         }
-        //return options[i];
+        */
+        return options[i];
         //console.log("return: " + options[i]);
       }
     }

@@ -79,12 +79,14 @@
       $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who + ": " + "</span>");
       var message = data.m;
       var messageArray = message.split(" ");
-      var delayPerWord = 0;
-      var delayForNewLine = messageArray.length * 25;
+      var delayPerWord = 40;
+      var delayForNewLine = (messageArray.length+1) * delayPerWord;
 
       //to get color of emotion
       var emotion = data.emotion;
       var color = "#FFFFFF";
+      //var color = $.xcolor.gradientlevel('#fc0', '#f00', 23, 100);
+      console.log("color: " + color);
       if(emotion == ":)" || emotion == ":-)") {
           color = "#FFFD91"; //happy color
       } else if(emotion == "lol" || emotion == ":D" || emotion == ":-D") {
@@ -164,7 +166,7 @@
             $("#topBox").hide();
           }, 2000);
         }, delayForNewLine+200);
-      }
+     }
 
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");

@@ -46,7 +46,8 @@
     });
 
     // block until username is answered
-    var username = window.prompt("Welcome, warrior! please declare your name?");
+    username = window.prompt("Welcome, warrior! please declare your name?");
+    console.log("username: " + username);
     if(!username){
       username = "anonymous"+Math.floor(Math.random()*1111);
     }
@@ -55,12 +56,13 @@
 
     // bind submission box
     $("#submission input").keydown(function( event ) {
+          console.log("username: " + username);
       if (event.which == 13) {
         var curr_emotion = has_emotions($(this).val());
         if(curr_emotion){
-          fb_instance_stream.push({who:username+": ", m:$(this).val(), v:cur_video_blob, c: my_color, emotion:curr_emotion});
+          fb_instance_stream.push({who:username, m:$(this).val(), v:cur_video_blob, c: my_color, emotion:curr_emotion});
         }else{
-          fb_instance_stream.push({who:username+": ", m:$(this).val(), c: my_color});
+          fb_instance_stream.push({who:username, m:$(this).val(), c: my_color});
         }
         $(this).val("");
         scroll_to_bottom(0);
@@ -74,9 +76,9 @@
   // creates a message node and appends it to the conversation
   function display_msg(data){
     if(!data.v) {
-      $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.who + data.m+"</div>");
+      $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.who + ": " + data.m+"</div>");
     } else if(data.v) {
-      $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who+"</span>");
+      $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who + ": " + "</span>");
       var message = data.m;
       var messageArray = message.split(" ");
       var delayPerWord = 0;
@@ -104,10 +106,6 @@
         $("#conversation").append("<br/>");
       }, delayForNewLine);
 
-      setTimeout(function() {
-        $("#bottomBox").fadeIn(delayForNewLine*3);
-      }, 100);
-
       // for video element
       var video1 = document.createElement("video");
       
@@ -121,24 +119,29 @@
       source.type =  "video/webm";
 
       video1.appendChild(source);
-      setTimeout(function() {
-        document.getElementById("recorded_video").appendChild(video1);
-        $("#bottomBox").show();
-        $("#topBox").show();
+      if(username != data.who) {
+        setTimeout(function() {
+          $("#bottomBox").fadeIn(delayForNewLine*3);
+        }, 100);
+        setTimeout(function() {
+          document.getElementById("recorded_video").appendChild(video1);
+          $("#bottomBox").show();
+          $("#topBox").show();
 
-        //$("#recorded_video").animate({opacity, 'hide'}, 2000);
-        /*
-        setTimeout(function() {
-          $("#recorded_video").fadeOut();
-        }, 2000);
-  */
-        //to make the video disappear
-        setTimeout(function() {
-          $("#recorded_video").empty();
-          $("#bottomBox").fadeOut('slow');
-          $("#topBox").hide();
-        }, 2000);
-      }, delayForNewLine+200);
+          //$("#recorded_video").animate({opacity, 'hide'}, 2000);
+          /*
+          setTimeout(function() {
+            $("#recorded_video").fadeOut();
+          }, 2000);
+    */
+          //to make the video disappear
+          setTimeout(function() {
+            $("#recorded_video").empty();
+            $("#bottomBox").fadeOut('slow');
+            $("#topBox").hide();
+          }, 2000);
+        }, delayForNewLine+200);
+      }
 
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");

@@ -30,7 +30,8 @@
       fb_chat_room_id = Math.random().toString(36).substring(7);
     }
     display_msg({who:"",m:"Share this url with your friend to join this chat: "+ document.location.origin+"/#"+fb_chat_room_id,c:"red"})
-
+    display_msg({who:"",m:"Instructions: See how these emoticons can enhace your chat:   :-)   :)   :D   :-D   lol   :(   :'(   :'-(   :o   :-o   o_o   ;)   ;-)   <3   :/   :-/   =/", c:"red"})
+    display_msg({who:"",m:" ", c:"red"}) //to skip a line
     // set up variables to access firebase data structure
     var fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
     var fb_instance_users = fb_new_chat_room.child('users');
@@ -74,33 +75,38 @@
   // creates a message node and appends it to the conversation
   function display_msg(data){
     if(!data.v) {
-      $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.who + ": " + data.m+"</div>");
+      var from = "";
+      if(data.who != "") {
+        from = data.who + ": ";
+
+      }
+      $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+ from + data.m+"</div>");
     } else if(data.v) {
       $("#conversation").append("<span class='msg' style='color:"+data.c+"'>"+data.who + ": " + "</span>");
       var message = data.m;
       var messageArray = message.split(" ");
-      var delayPerWord = 40;
-      var delayForNewLine = (messageArray.length+1) * delayPerWord;
+      var delayPerWord = 60;
+      var delayForNewLine = (messageArray.length+2) * delayPerWord;
 
       //to get color of emotion
       var emotion = data.emotion;
       var color = "#FFFFFF";
       //var color = $.xcolor.gradientlevel('#fc0', '#f00', 23, 100);
-      console.log("color: " + color);
+      //console.log("color: " + color);
       if(emotion == ":)" || emotion == ":-)") {
-          color = "#FFFD91"; //happy color
+          color = "#F2EF3D"; //happy color
       } else if(emotion == "lol" || emotion == ":D" || emotion == ":-D") {
-          color = "#FA9D07"; //laughter color
+          color = "#F09E07"; //laughter color
       } else if(emotion == ":(" || emotion == ":-(" || emotion == ":'-(") {
           color = "#2B619E"; //sad color
       } else if(emotion == ":o" || emotion == "o_o" || emotion == ":-o") {
           color = "#F06237"; //surprise color
       } else if(emotion == ";)" || emotion == ";-)") {
-          color = "#ADEB42"; //wink color
+          color = "#A125E8"; //wink color
       } else if(emotion == "<3") {
           color = "#F748AB"; //love color
       } else if(emotion == ":/" || emotion == ":-/" || emotion == "=/") {
-          color = "#917E43"; //skeptical color
+          color = "#8C815E"; //skeptical color
       }
       $("#topBox").css("background-color", color);
       $("#bottomBox").css("background-color", color);
@@ -109,18 +115,31 @@
       // to get text to appear word by word, foreshadowing video
       var whereToAppend = $("#conversation");
       var wordColor = data.c;
-      var addTextByDelay = function(messageArray, whereToAppend, delay) {
+      var steps = messageArray.length;
+      var rainbow = new Rainbow();
+      rainbow.setNumberRange(1, steps);
+      rainbow.setSpectrum(wordColor, color);
+      var gradientColors = [];
+      for (var i = 0; i < steps; i++) {
+        var hexColor = rainbow.colourAt(i);
+        console.log("at i=" + i + ", color=" + hexColor);
+        gradientColors.push('#' + hexColor);
+      }
+      var step = 0;
+      var addTextByDelay = function(messageArray, whereToAppend, delay, j) {
         if(messageArray.length > 0) {
-          whereToAppend.append("<span style='color:"+wordColor+"'>"+messageArray[0] + " </span>");
+          console.log("color should be " + gradientColors[j]);
+          whereToAppend.append("<span style='color:"+gradientColors[j]+"'>"+messageArray[0] + " </span>");
           setTimeout(function() {
-            addTextByDelay(messageArray.slice(1), whereToAppend, delay);
+            addTextByDelay(messageArray.slice(1), whereToAppend, delay, j+1);
           }, delay);
         }
       }
-      addTextByDelay(messageArray, whereToAppend, delayPerWord);
+      addTextByDelay(messageArray, whereToAppend, delayPerWord, step);
       setTimeout(function() {
         $("#conversation").append("<br/>");
       }, delayForNewLine);
+
 
       // for video element
       var video1 = document.createElement("video");
@@ -136,9 +155,7 @@
 
       video1.appendChild(source);
       if(username != data.who) {
-        setTimeout(function() {
-          $("#bottomBox").fadeIn(delayForNewLine*3);
-        }, 100);
+
         setTimeout(function() {
           document.getElementById("recorded_video").appendChild(video1);
           $("#bottomBox").show();
@@ -164,8 +181,15 @@
             $("#word").hide();
             $("#bottomBox").fadeOut('slow');
             $("#topBox").hide();
-          }, 2000);
-        }, delayForNewLine+200);
+          }, 2500);
+        }, delayForNewLine*2);
+     } else {
+        setTimeout(function() {
+          $("#video_sent").fadeIn();
+          setTimeout(function() {
+            $("#video_sent").fadeOut();
+          }, 1000);
+        }, delayForNewLine*2);
      }
 
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below

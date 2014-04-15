@@ -92,7 +92,7 @@ video:hover {
   height:100%;
   position:fixed;
   display:none;
-  opacity:0.5;
+  opacity:0.3;
   z-index:250;
 }
 #bottomBox {
@@ -114,4 +114,18 @@ video:hover {
   left:10%;
   position:fixed;
 }
-
+#video_sent {
+  text-align:center;
+  z-index:500;
+  font-size:75px;
+  font-color:#8A8987;
+  width:900px;
+  height:200px;
+  position: absolute;
+  top: 0;
+  left:0;
+  right: 0;
+  bottom: 0;
+  margin:auto;
+  display:none;
+}

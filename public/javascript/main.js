@@ -29,8 +29,9 @@
     }else{
       fb_chat_room_id = Math.random().toString(36).substring(7);
     }
+    display_msg({who:"",m:"Show your friends how you feel with video",c:"red"})
     display_msg({who:"",m:"Share this url with your friend to join this chat: "+ document.location.origin+"/#"+fb_chat_room_id,c:"red"})
-    display_msg({who:"",m:"Instructions: See how these emoticons can enhace your chat:   :-)   :)   :D   :-D   lol   :(   :'(   :'-(   :o   :-o   o_o   ;)   ;-)   <3   :/   :-/   =/", c:"red"})
+    display_msg({who:"", m:"Instructions: See how these emoticons can enhace your chat:   :-)   :)   :D   :-D   lol   :(   :'(   :'-(   :o   :-o   o_o   ;)   ;-)   <3   :/   :-/   =/", c:"red"})
     display_msg({who:"",m:" ", c:"red"}) //to skip a line
     // set up variables to access firebase data structure
     var fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
@@ -181,7 +182,7 @@
             $("#word").hide();
             $("#bottomBox").fadeOut('slow');
             $("#topBox").hide();
-          }, 2500);
+          }, 2000);
         }, delayForNewLine*2);
      } else {
         setTimeout(function() {
@@ -262,8 +263,8 @@
       };
       setInterval( function() {
         mediaRecorder.stop();
-        mediaRecorder.start(1700);
-      }, 1700 );
+        mediaRecorder.start(2000);
+      }, 2000 );
       console.log("connect to media stream!");
     }
 
@@ -281,23 +282,6 @@
     var options = [":-)",":)",":D",":-D","lol",":(",":'(",":'-(",":o",":-o","o_o",";)",";-)", "<3",":/",":-/","=/"];
     for(var i=0;i<options.length;i++){
       if(msg.indexOf(options[i])!= -1){
-        /*
-        if(i <= 1) {
-          return "#FFFD91"; //happy color
-        } else if(i >=2 && i <= 4) {
-          return "#FA9D07"; //laughter color
-        } else if(i>=5 && i <=7) {
-          return "#2B619E"; //sad color
-        } else if(i>=8 && i <= 10) {
-          return "#F06237"; //surprise color
-        } else if(i>=11 && i <= 12) {
-          return "#ADEB42"; //wink color
-        } else if(i==13) {
-          return "#F748AB"; //love color
-        } else if(i>=14 && i<= 16) {
-          return "#917E43"; //skeptical color
-        }
-        */
         return options[i];
         //console.log("return: " + options[i]);
       }
